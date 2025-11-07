@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab Dashboard</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        button { font-size: 1.2em; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Microservice Test Dashboard</h1>
+
+    <h3>Inventory Service</h3>
+    <button onclick="fetchData('/api/inventory/widget')">Check 'widget' stock</button>
+    <button onclick="fetchData('/api/inventory/gadget')">Check 'gadget' stock</button>
+
+    <h3>Order Service</h3>
+    <button onclick="placeOrder('/api/orders', 'widget', 1)">Order 1 'widget'</button>
+    <button onclick="placeOrder('/api/orders', 'widget', 200)">Order 200 'widget' (fail)</button>
+
+    <hr>
+    <h3>Response:</h3>
+    <pre id="response"></pre>
+
+    <script>
+        const responseEl = document.getElementById('response');
+
+        async function fetchData(url) {
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                responseEl.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                responseEl.textContent = err.message;
+            }
+        }
+
+        async function placeOrder(url, item, quantity) {
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ item, quantity })
+                });
+                const data = await res.json();
+                responseEl.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                responseEl.textContent = err.message;
+            }
+        }
+    </script>
+</body>
+</html>

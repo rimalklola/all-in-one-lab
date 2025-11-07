@@ -1,0 +1,13 @@
+# Node.js
+/services/**/node_modules
+npm-debug.log
+yarn-error.log
+
+# Terraform
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+
+# Operating System
+.DS_Store
+Thumbs.db

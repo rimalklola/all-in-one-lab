@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: inventory-service-monitor
+  # This MUST be in the monitoring namespace
+  namespace: monitoring 
+  labels:
+    release: monitoring  # <-- This is the corrected "magic label"
+spec:
+  # This finds your Service
+  selector:
+    matchLabels:
+      app: inventory-service 
+  # This tells it to look in the 'default' namespace
+  namespaceSelector:
+    matchNames:
+      - default 
+  endpoints:
+  - port: http # This matches the 'name' of the port in your Service YAML
+    path: /metrics
+    interval: 15s

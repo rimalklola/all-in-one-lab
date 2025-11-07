@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: order-service-monitor
+  namespace: monitoring 
+  labels:
+    release: monitoring # The "magic label" you found
+spec:
+  # This finds the Service with the label 'app: order-service'
+  selector:
+    matchLabels:
+      app: order-service 
+  namespaceSelector:
+    matchNames:
+      - default 
+  endpoints:
+  - port: http # This matches the 'name' of the port in the Service
+    path: /metrics
+    interval: 15s

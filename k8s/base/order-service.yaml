@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+  labels:
+    app: order-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+      annotations:
+        # Note the port change here
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8082'
+        prometheus.io/path: '/metrics'
+    spec:
+      containers:
+        - name: order-service
+          image: order-service:v2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8082
+              name: http
+          
+          # Probes now point to the new port
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8082
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8082
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+  labels:
+    app: order-service # This label is for the ServiceMonitor
+spec:
+  type: ClusterIP
+  selector:
+    app: order-service # Finds the pods
+  ports:
+    - name: http
+      port: 80           # Service runs on port 80
+      targetPort: 8082   # Sends traffic to pod's port 8082
