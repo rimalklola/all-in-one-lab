@@ -89,6 +89,7 @@ breaker.on('fallback', () => ordersTotal.inc({ service: 'order-service', status:
 // === BUSINESS LOGIC ENDPOINT ===
 
 app.post('/order', async (req, res) => {
+  
   const end = httpRequestDuration.startTimer();
   const { item, quantity } = req.body;
 

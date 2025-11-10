@@ -1,0 +1,29 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: order-service-alerts
+  # CRITICAL: This MUST be in the same namespace as Prometheus
+  namespace: monitoring
+  labels:
+    release: monitoring # The "magic label" Prometheus is looking for
+spec:
+  groups:
+  - name: order-service.rules
+    rules:
+    - alert: HighOrderServiceErrorRate
+      # This is the PromQL query that triggers the alert [cite: 88]
+      expr: |
+        (
+          sum(rate(http_requests_total{service="order-service", code=~"5.*"}[5m]))
+        /
+          sum(rate(http_requests_total{service="order-service"}[5m]))
+        ) * 100 > 10
+      # How long the condition must be true before firing
+      for: 1m
+      # Labels attached to the alert itself
+      labels:
+        severity: critical
+      # The human-readable message [cite: 88]
+      annotations:
+        summary: "High 5xx Error Rate on Order Service"
+        description: "The order-service is experiencing an error rate above 10% over the last 5 minutes. (Value: {{$value}}%)"

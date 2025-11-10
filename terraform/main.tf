@@ -23,4 +23,6 @@ resource "helm_release" "monitoring_stack" {
   ]
 
   depends_on = [kubernetes_namespace.monitoring]
+
+  
 }

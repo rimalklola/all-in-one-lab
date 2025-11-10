@@ -14,3 +14,32 @@ alertmanager:
   service:
     type: NodePort
     nodePort: 30093
+# Inside values-monitoring.yaml
+
+alertmanager:
+  config:
+    global:
+      smtp_smarthost: 'mailhog.default.svc.cluster.local:1025'
+      smtp_from: 'alertmanager@lab.local'
+      smtp_auth_username: ''
+      smtp_auth_password: ''
+      smtp_require_tls: false
+    
+    # This section defines who to send alerts to
+    receivers:
+    - name: 'email-receiver'
+      email_configs:
+      - to: 'ops-team@your-company.com'
+        
+    # This section defines what to do with alerts
+    route:
+      # This is the default receiver for all alerts
+      receiver: 'email-receiver'
+      
+      # You can add more specific routes here later
+      # routes:
+      # - match:
+      #     severity: 'critical'
+      #   receiver: 'email-receiver'
+
+# ... other values in this file ...

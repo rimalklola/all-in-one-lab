@@ -1,0 +1,64 @@
+# .github/workflows/ci.yml
+
+name: CI - Build and Push Service Images
+
+# This tells GitHub to run the workflow on every push to the 'main' branch
+on:
+  push:
+    branches: [ "main" ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    # This gives the job permission to write to the GHCR
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          # GITHUB_TOKEN is a special secret automatically provided by GitHub
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push inventory-service
+        uses: docker/build-push-action@v6
+        with:
+          context: ./services/inventory-service
+          file: ./services/inventory-service/Dockerfile
+          push: true
+          # This creates an image tag like:
+          # ghcr.io/your-username/inventory-service:latest
+          tags: ghcr.io/${{ github.repository_owner }}/inventory-service:latest
+
+      - name: Build and push order-service
+        uses: docker/build-push-action@v6
+        with:
+          context: ./services/order-service
+          file: ./services/order-service/Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/order-service:v2
+
+      - name: Build and push api-gateway
+        uses: docker/build-push-action@v6
+        with:
+          context: ./services/api-gateway
+          file: ./services/api-gateway/Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/api-gateway:latest
+
+      - name: Build and push frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./services/frontend
+          file: ./services/frontend/Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/frontend:latest
