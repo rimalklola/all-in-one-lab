@@ -26,7 +26,7 @@ jobs:
           # This sets the cluster context name. Find yours
           # by running "kubectl config current-context"
           # It's probably "kind-kind-kind" or "kind-all-in-one-lab"
-          context: 'kind-kind' 
+          context: 'kind-kind-kind' 
 
       - name: Deploy all services
         run: |
