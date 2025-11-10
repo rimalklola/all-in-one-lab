@@ -1,0 +1,40 @@
+# .github/workflows/cd.yml
+
+name: CD - Deploy to Kubernetes
+
+# This workflow runs only when the "CI" workflow is successful
+on:
+  workflow_run:
+    workflows: ["CI - Build and Push Service Images"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Kubeconfig
+        uses: azure/k8s-set-context@v4
+        with:
+          # This pulls the secret you just created
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+          # This sets the cluster context name. Find yours
+          # by running "kubectl config current-context"
+          # It's probably "kind-kind-kind" or "kind-all-in-one-lab"
+          context: 'kind-kind' 
+
+      - name: Deploy all services
+        run: |
+          # Apply all the manifests in the 'k8s/base' directory
+          kubectl apply -f k8s/base/
+
+          # Force a restart of the deployments to pull the new images
+          kubectl rollout restart deployment inventory-service
+          kubectl rollout restart deployment order-service
+          kubectl rollout restart deployment api-gateway
+          kubectl rollout restart deployment frontend
