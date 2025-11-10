@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: order-service
-          image: order-service:v2
+          image: ghcr.io/rimalklola/order-service:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8082

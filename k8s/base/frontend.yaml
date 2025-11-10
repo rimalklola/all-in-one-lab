@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: frontend:latest
+        image: ghcr.io/rimalklola/frontend:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
