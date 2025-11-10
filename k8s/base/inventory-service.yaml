@@ -20,7 +20,7 @@ spec:
         - name: inventory-service
           image: ghcr.io/rimalklola/inventory-service:latest
           
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 8081
               name: http

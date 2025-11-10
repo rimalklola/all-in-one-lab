@@ -1,0 +1,12 @@
+﻿{
+  "repositoryName": "rimalklola/all-in-one-lab",
+  "pipelineDirectory": "all-in-one-lab",
+  "workspaceDirectory": "all-in-one-lab\\all-in-one-lab",
+  "repositories": {
+    "rimalklola/all-in-one-lab": {
+      "repositoryPath": "all-in-one-lab\\all-in-one-lab",
+      "lastRunOn": "11/10/2025 11:47:25 +01:00"
+    }
+  },
+  "lastRunOn": "11/10/2025 11:47:25 +01:00"
+}
